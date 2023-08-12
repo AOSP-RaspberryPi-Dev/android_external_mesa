@@ -792,15 +792,6 @@ if with_android_stub and not with_platform_android
   error('`-D android-stub=true` makes no sense without `-D platforms=android`')
 endif
 
-with_libbacktrace = get_option('android-libbacktrace') \
-  .require(with_platform_android, error_message : '`-D android-libbacktrace=enabled` makes no sense without `-D platforms=android`') \
-  .disable_auto_if(not with_platform_android) \
-  .allowed()
-
-if with_libbacktrace
-  cpp_args += '-DWITH_LIBBACKTRACE'
-endif
-
 if with_platform_android
   dep_android_mapper4 = null_dep
   if not with_android_stub
@@ -809,9 +800,6 @@ if with_platform_android
       dependency('hardware'),
       dependency('sync'),
     ]
-    if with_libbacktrace
-      dep_android += dependency('backtrace')
-    endif
     if get_option('platform-sdk-version') >= 26
       dep_android += dependency('nativewindow')
     endif

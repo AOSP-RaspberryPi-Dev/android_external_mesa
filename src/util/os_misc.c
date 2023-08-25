@@ -140,13 +140,14 @@ os_log_message(const char *message)
  * The option name used for getenv is translated into a property name
  * by:
  *
- *  1) convert to lowercase
- *  2) replace '_' with '.'
- *  3) if necessary, prepend "mesa."
+ *  1) prepend "vendor."
+ *  2) convert to lowercase
+ *  3) replace '_' with '.'
+ *  4) if necessary, prepend "mesa."
  *
  * For example:
- *  - MESA_EXTENSION_OVERRIDE -> mesa.extension.override
- *  - GALLIUM_HUD -> mesa.gallium.hud
+ *  - MESA_EXTENSION_OVERRIDE -> vendor.mesa.extension.override
+ *  - GALLIUM_HUD -> vendor.mesa.gallium.hud
  *
  */
 static char *
@@ -155,6 +156,8 @@ os_get_android_option(const char *name)
    static thread_local char os_android_option_value[PROPERTY_VALUE_MAX];
    char key[PROPERTY_KEY_MAX];
    char *p = key, *end = key + PROPERTY_KEY_MAX;
+   /* add "vendor." prefix */
+   p += strlcpy(p, "vendor.", end - p);
    /* add "mesa." prefix if necessary: */
    if (strstr(name, "MESA_") != name)
       p += strlcpy(p, "mesa.", end - p);
